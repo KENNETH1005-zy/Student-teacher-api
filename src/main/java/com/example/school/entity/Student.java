@@ -1,6 +1,10 @@
 package com.example.school.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -12,6 +16,10 @@ public class Student {
 
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<StudentTeacher> studentTeachers = new ArrayList<>();
 
     public Student() {}
 
@@ -28,4 +36,9 @@ public class Student {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public List<StudentTeacher> getStudentTeachers() { return studentTeachers; }
+    public void setStudentTeachers(List<StudentTeacher> studentTeachers) {
+        this.studentTeachers = studentTeachers;
+    }
 }

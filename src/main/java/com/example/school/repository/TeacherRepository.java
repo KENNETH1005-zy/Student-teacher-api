@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
-    @Query("select t from Teacher t, StudentTeacher st " +
-           "where st.studentId = ?1 and t.id = st.teacherId")
+    @Query("select st.teacher from StudentTeacher st where st.student.id = ?1")
     List<Teacher> findTeachersByStudentId(Long studentId);
 }

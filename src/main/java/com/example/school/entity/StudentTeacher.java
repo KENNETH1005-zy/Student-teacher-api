@@ -1,57 +1,42 @@
 package com.example.school.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
-@Table(name = "student_teacher")
-@IdClass(StudentTeacher.PK.class)
+@Table(
+    name = "student_teacher",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "teacher_id"})
+)
 public class StudentTeacher {
 
     @Id
-    @Column(name = "student_id")
-    private Long studentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @Column(name = "teacher_id")
-    private Long teacherId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false)
+    @JsonIgnore
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "teacher_id", nullable = false)
+    @JsonIgnore
+    private Teacher teacher;
 
     public StudentTeacher() {}
 
-    public StudentTeacher(Long studentId, Long teacherId) {
-        this.studentId = studentId;
-        this.teacherId = teacherId;
+    public StudentTeacher(Student student, Teacher teacher) {
+        this.student = student;
+        this.teacher = teacher;
     }
 
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getTeacherId() { return teacherId; }
-    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
+    public Student getStudent() { return student; }
+    public void setStudent(Student student) { this.student = student; }
 
-    public static class PK implements Serializable {
-        private Long studentId;
-        private Long teacherId;
-
-        public PK() {}
-
-        public PK(Long studentId, Long teacherId) {
-            this.studentId = studentId;
-            this.teacherId = teacherId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof PK pk)) return false;
-            return Objects.equals(studentId, pk.studentId)
-                    && Objects.equals(teacherId, pk.teacherId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(studentId, teacherId);
-        }
-    }
+    public Teacher getTeacher() { return teacher; }
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
 }
